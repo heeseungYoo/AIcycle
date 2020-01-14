@@ -18,14 +18,14 @@ app.listen(port, function () {
 //스키마
 var Schema_login = mongoose.Schema;
 var Schema = mongoose.Schema;
-var PointSchema = new Schema({type: String, date: String, point: Number}, {_id:false}, {default:[]});
+var PointSchema = new Schema({type: String, date: String, point: Number}, {_id:false});
 var loginSchema = new Schema_login({
   userImg: String,
   name : String,
   userID : {type:String,unique:true, trim:true}, 
   userPassword : String,
   email : String,
-  points : [PointSchema],
+  points : {type: [PointSchema], default:[{"type":"hello world", "date":"2020-01-15", "point":100}]},
   totalPoints : {type:Number, default:0}
 });
 
@@ -113,7 +113,7 @@ app.post('/logins', function(req, res, next){
   var userID = req.body.userID;
   var userPassword = req.body.userPassword;
   var name = req.body.name;
-  var email = req.body.userEmail;
+  var email = req.body.email;
   var points = req.body.points
   var totalPoints = req.body.totalPoints
  // var point_array = Point({
@@ -152,9 +152,9 @@ var pipeline = [
       "points": {"$push": "$points"},
       "totalPoints":{"$sum":"$points.point"}
     }
-  },
-  {"$out":"logins"}
+  }, {"$out":"logins"}
 ]
+
 
 app.get('/personalInfo/:userID', function(req, res, next) {
   Login.aggregate(pipeline).exec(function(err, results) {

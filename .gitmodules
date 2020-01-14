@@ -1,0 +1,3 @@
+[submodule "madcamp3"]
+	path = madcamp3
+	url = https://github.com/heeseungYoo/madcamp3.git
